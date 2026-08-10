@@ -3,5 +3,4 @@ uvicorn[standard]
 pymysql
 python-dotenv
 
-# Flet y requests se instalaran cuando comience el trabajo del frontend.
 

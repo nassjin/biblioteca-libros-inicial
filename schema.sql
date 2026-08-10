@@ -1,5 +1,3 @@
--- Primera version de la tabla para la clase.
--- Todavia no se agregan NOT NULL, UNIQUE, DEFAULT ni CHECK.
 
 CREATE DATABASE IF NOT EXISTS biblioteca_db;
 
