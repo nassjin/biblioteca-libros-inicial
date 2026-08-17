@@ -28,6 +28,29 @@ def main(page: ft.Page):
             ft.DataColumn(ft.Text("Numero de Ejemplares")),
             ft.DataColumn(ft.Text("Acciones"))
         ],
-        rows=[]
+        rows=[],
     )
+
+    formulario = ft.Column(
+        controls=[
+            txt_titulo,
+            txt_autor,
+            txt_genero,
+            txt_anio,
+            txt_ejemplares,
+        ]
+    )
+
+    page.add(
+        ft.Text("Biblioteca Escolar",
+                size=30,
+                weight=ft.FontWeight.BOLD
+        ),
+        #ft.Row([txt_titulo, txt_autor, txt_genero, txt_anio, txt_ejemplares]),
+        formulario,
+        tabla,            
+    )
+if __name__ == "__main__":
+    ft.run(main)
+
 

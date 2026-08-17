@@ -3,5 +3,5 @@ uvicorn[standard]
 pymysql
 python-dotenv
 flet
-
+requests
 
