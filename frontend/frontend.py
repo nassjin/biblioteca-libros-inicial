@@ -1,12 +1,10 @@
 import flet as ft
-
 import requests
-#Direccion del endpoint de libros
+
 API_URL = "http://127.0.0.1:8000/libros/"
 
 def main(page: ft.Page):
 
-    #Configuracion de la pagina
     page.title = "Biblioteca Escolar"
     page.padding = 30
     page.theme_mode = ft.ThemeMode.LIGHT
@@ -17,7 +15,6 @@ def main(page: ft.Page):
     txt_genero = ft.TextField(label="Genero")
     txt_anio = ft.TextField(label="Año de Publicacion")
     txt_ejemplares = ft.TextField(label="Numero de Ejemplares")
-
     tabla = ft.DataTable(
         columns=[
             ft.DataColumn(ft.Text("ID")),
@@ -41,16 +38,38 @@ def main(page: ft.Page):
         ]
     )
 
+    def cargar_libros():
+        try:
+            respuesta = requests.get(API_URL, timeout=5)
+            respuesta.raise_for_status()
+            libros = respuesta.json()
+            tabla.rows.clear()    
+
+            for libro in libros:
+                fila = ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text(str(libro.get("id", "")))),
+                        ft.DataCell(ft.Text(str(libro.get("titulo", "")))),
+                        ft.DataCell(ft.Text(str(libro.get("autor", "")))),
+                        ft.DataCell(ft.Text(str(libro.get("genero", "")))),
+                        ft.DataCell(ft.Text(str(libro.get("anio_publicacion", "")))),
+                        ft.DataCell(ft.Text(str(libro.get("ejemplares", "")))),
+                        ft.DataCell(ft.Text("Acciones")),
+                    ]
+                )
+                tabla.rows.append(fila)
+            page.update()
+
+        except requests.ConnectionError:
+            print("No se puede conectar!!!!")
+           
+            
     page.add(
-        ft.Text("Biblioteca Escolar",
-                size=30,
-                weight=ft.FontWeight.BOLD
-        ),
-        #ft.Row([txt_titulo, txt_autor, txt_genero, txt_anio, txt_ejemplares]),
+        ft.Text("Biblioteca Escolar", size=30, weight=ft.FontWeight.BOLD),
         formulario,
-        tabla,            
+        tabla,        
     )
+    cargar_libros()
+
 if __name__ == "__main__":
     ft.run(main)
-
-

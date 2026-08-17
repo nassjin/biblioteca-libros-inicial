@@ -2,9 +2,9 @@
 
 from fastapi import FastAPI
 
-from backend.rutas import libros
 
 
+from .rutas import libros
 app = FastAPI(
     title="API Biblioteca Escolar",
     description="Primera etapa: CRUD de una sola tabla",
