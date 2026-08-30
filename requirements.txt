@@ -1,6 +1,7 @@
 # Backend
 fastapi
 uvicorn[standard]
+pydantic
 
 # Base de datos
 pymysql
