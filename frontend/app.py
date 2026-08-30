@@ -6,7 +6,6 @@ mediante peticiones HTTP.
 """
 
 import os
-
 import flet as ft
 import requests
 from dotenv import load_dotenv
@@ -35,9 +34,14 @@ def main(page: ft.Page):
     # ======================================================
 
     page.title = "Biblioteca Escolar"
-    page.padding = 30
+    page.padding = 20
     page.theme_mode = ft.ThemeMode.LIGHT
+    page.bgcolor = "#F1F5F9"
     page.scroll = ft.ScrollMode.AUTO
+
+    page.theme = ft.Theme(
+        color_scheme_seed=ft.Colors.INDIGO,
+    )
 
     # Guarda el ID del libro que se está editando.
     libro_id_edicion = None
@@ -140,6 +144,112 @@ def main(page: ft.Page):
         ],
         rows=[],
     )
+
+    # ======================================================
+    # INDICADORES DEL CATÁLOGO
+    # ======================================================
+
+    txt_total = ft.Text(
+        "0",
+        size=28,
+        weight=ft.FontWeight.BOLD,
+        color=ft.Colors.INDIGO_700,
+    )
+
+    txt_disponibles = ft.Text(
+        "0",
+        size=28,
+        weight=ft.FontWeight.BOLD,
+        color=ft.Colors.GREEN_700,
+    )
+
+    txt_agotados = ft.Text(
+        "0",
+        size=28,
+        weight=ft.FontWeight.BOLD,
+        color=ft.Colors.RED_700,
+    )
+
+    txt_mantencion = ft.Text(
+        "0",
+        size=28,
+        weight=ft.FontWeight.BOLD,
+        color=ft.Colors.ORANGE_700,
+    )
+
+    def crear_tarjeta_indicador(
+            titulo: str,
+            valor: ft.Text,
+            icono,
+            color_fondo: str,
+            color_icono,
+    ):
+        """Crea una tarjeta para mostrar un indicador."""
+
+        return ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Container(
+                        content=ft.Icon(
+                            icono,
+                            color=color_icono,
+                            size=28,
+                        ),
+                        padding=12,
+                        bgcolor=ft.Colors.WHITE,
+                        border_radius=12,
+                    ),
+                    ft.Column(
+                        controls=[
+                            ft.Text(
+                                titulo,
+                                size=13,
+                                color=ft.Colors.GREY_700,
+                            ),
+                            valor,
+                        ],
+                        spacing=0,
+                    ),
+                ],
+            ),
+            padding=16,
+            bgcolor=color_fondo,
+            border_radius=16,
+            expand=True,
+        )
+
+    tarjeta_total = crear_tarjeta_indicador(
+        titulo="Total de libros",
+        valor=txt_total,
+        icono=ft.Icons.LIBRARY_BOOKS,
+        color_fondo="#E0E7FF",
+        color_icono=ft.Colors.INDIGO_700,
+    )
+
+    tarjeta_disponibles = crear_tarjeta_indicador(
+        titulo="Disponibles",
+        valor=txt_disponibles,
+        icono=ft.Icons.CHECK_CIRCLE,
+        color_fondo="#DCFCE7",
+        color_icono=ft.Colors.GREEN_700,
+    )
+
+    tarjeta_agotados = crear_tarjeta_indicador(
+        titulo="Agotados",
+        valor=txt_agotados,
+        icono=ft.Icons.REMOVE_CIRCLE,
+        color_fondo="#FEE2E2",
+        color_icono=ft.Colors.RED_700,
+    )
+
+    tarjeta_mantencion = crear_tarjeta_indicador(
+        titulo="En mantención",
+        valor=txt_mantencion,
+        icono=ft.Icons.BUILD_CIRCLE,
+        color_fondo="#FFEDD5",
+        color_icono=ft.Colors.ORANGE_700,
+    )
+
 
 
     # ======================================================
@@ -306,6 +416,51 @@ def main(page: ft.Page):
             "estado": dd_estado.value,
         }
 
+    def crear_etiqueta_estado(estado: str):
+        """Crea una etiqueta con un color según el estado."""
+
+        configuracion = {
+            "DISPONIBLE": {
+                "texto": "Disponible",
+                "fondo": "#DCFCE7",
+                "color": ft.Colors.GREEN_800,
+            },
+            "AGOTADO": {
+                "texto": "Agotado",
+                "fondo": "#FEE2E2",
+                "color": ft.Colors.RED_800,
+            },
+            "MANTENCION": {
+                "texto": "Mantención",
+                "fondo": "#FFEDD5",
+                "color": ft.Colors.ORANGE_800,
+            },
+        }
+
+        datos = configuracion.get(
+            estado,
+            {
+                "texto": estado,
+                "fondo": "#E2E8F0",
+                "color": ft.Colors.GREY_800,
+            },
+        )
+
+        return ft.Container(
+            content=ft.Text(
+                datos["texto"],
+                size=12,
+                weight=ft.FontWeight.BOLD,
+                color=datos["color"],
+            ),
+            padding=ft.Padding.symmetric(
+                horizontal=10,
+                vertical=5,
+            ),
+            bgcolor=datos["fondo"],
+            border_radius=20,
+        )
+
 
     # ======================================================
     # MOSTRAR LIBROS EN LA TABLA
@@ -315,6 +470,30 @@ def main(page: ft.Page):
         """Coloca una lista de libros en la tabla."""
 
         tabla.rows.clear()
+        total = len(libros)
+
+        disponibles = sum(
+            1
+            for libro in libros
+            if libro.get("estado") == "DISPONIBLE"
+        )
+
+        agotados = sum(
+            1
+            for libro in libros
+            if libro.get("estado") == "AGOTADO"
+        )
+
+        mantencion = sum(
+            1
+            for libro in libros
+            if libro.get("estado") == "MANTENCION"
+        )
+
+        txt_total.value = str(total)
+        txt_disponibles.value = str(disponibles)
+        txt_agotados.value = str(agotados)
+        txt_mantencion.value = str(mantencion)
 
         for libro in libros:
             libro_actual = libro
@@ -373,7 +552,7 @@ def main(page: ft.Page):
                         )
                     ),
                     ft.DataCell(
-                        ft.Text(
+                        crear_etiqueta_estado(
                             str(libro.get("estado", ""))
                         )
                     ),
@@ -681,6 +860,8 @@ def main(page: ft.Page):
         "Guardar libro",
         icon=ft.Icons.SAVE,
         on_click=guardar_libro,
+        bgcolor=ft.Colors.INDIGO_600,
+        color=ft.Colors.WHITE,
     )
 
     btn_cancelar = ft.OutlinedButton(
@@ -694,6 +875,8 @@ def main(page: ft.Page):
         "Buscar",
         icon=ft.Icons.SEARCH,
         on_click=buscar_libros,
+        bgcolor=ft.Colors.INDIGO_600,
+        color=ft.Colors.WHITE,
     )
 
     btn_mostrar_todos = ft.OutlinedButton(
@@ -732,61 +915,138 @@ def main(page: ft.Page):
         ],
     )
 
-
-    # ======================================================
-    # CONTROLES DE LA PÁGINA
-    # ======================================================
-
     page.add(
-        ft.Text(
-            "Biblioteca Escolar",
-            size=30,
-            weight=ft.FontWeight.BOLD,
+        # ==================================================
+        # ENCABEZADO
+        # ==================================================
+
+        ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Container(
+                        content=ft.Icon(
+                            ft.Icons.LOCAL_LIBRARY,
+                            size=38,
+                            color=ft.Colors.WHITE,
+                        ),
+                        padding=12,
+                        bgcolor="#4338CA",
+                        border_radius=14,
+                    ),
+                    ft.Column(
+                        controls=[
+                            ft.Text(
+                                "Biblioteca Escolar",
+                                size=30,
+                                weight=ft.FontWeight.BOLD,
+                                color=ft.Colors.WHITE,
+                            ),
+                            ft.Text(
+                                "Administración del catálogo de libros",
+                                size=14,
+                                color="#C7D2FE",
+                            ),
+                        ],
+                        spacing=2,
+                    ),
+                ],
+            ),
+            padding=ft.Padding.symmetric(
+                horizontal=30,
+                vertical=24,
+            ),
+            bgcolor="#312E81",
         ),
 
-        ft.Text(
-            "Administración del catálogo de libros",
-            size=16,
-            color=ft.Colors.GREY_700,
-        ),
+        # ==================================================
+        # CONTENIDO PRINCIPAL
+        # ==================================================
 
-        ft.Divider(),
+        ft.Container(
+            content=ft.Column(
+                controls=[
+                    # Indicadores.
+                    ft.Row(
+                        controls=[
+                            tarjeta_total,
+                            tarjeta_disponibles,
+                            tarjeta_agotados,
+                            tarjeta_mantencion,
+                        ],
+                    ),
 
-        ft.Text(
-            "Información del libro",
-            size=20,
-            weight=ft.FontWeight.BOLD,
-        ),
+                    # Formulario.
+                    ft.Container(
+                        content=ft.Column(
+                            controls=[
+                                ft.Row(
+                                    controls=[
+                                        ft.Icon(
+                                            ft.Icons.EDIT_NOTE,
+                                            color=ft.Colors.INDIGO_600,
+                                        ),
+                                        ft.Text(
+                                            "Información del libro",
+                                            size=20,
+                                            weight=ft.FontWeight.BOLD,
+                                        ),
+                                    ],
+                                ),
+                                ft.Divider(),
+                                formulario,
+                                ft.Row(
+                                    controls=[
+                                        btn_cancelar,
+                                        btn_guardar,
+                                    ],
+                                    alignment=ft.MainAxisAlignment.END,
+                                ),
+                            ],
+                        ),
+                        padding=22,
+                        bgcolor=ft.Colors.WHITE,
+                        border_radius=16,
+                    ),
 
-        formulario,
-
-        ft.Row(
-            controls=[
-                btn_cancelar,
-                btn_guardar,
-            ],
-            alignment=ft.MainAxisAlignment.END,
-        ),
-
-        ft.Divider(),
-
-        ft.Text(
-            "Catálogo",
-            size=20,
-            weight=ft.FontWeight.BOLD,
-        ),
-
-        ft.Row(
-            controls=[
-                txt_buscar,
-                btn_buscar,
-                btn_mostrar_todos,
-            ],
-        ),
-
-        ft.Row(
-            controls=[tabla],
-            scroll=ft.ScrollMode.AUTO,
+                    # Catálogo.
+                    ft.Container(
+                        content=ft.Column(
+                            controls=[
+                                ft.Row(
+                                    controls=[
+                                        ft.Icon(
+                                            ft.Icons.MENU_BOOK,
+                                            color=ft.Colors.INDIGO_600,
+                                        ),
+                                        ft.Text(
+                                            "Catálogo de libros",
+                                            size=20,
+                                            weight=ft.FontWeight.BOLD,
+                                        ),
+                                    ],
+                                ),
+                                ft.Divider(),
+                                ft.Row(
+                                    controls=[
+                                        txt_buscar,
+                                        btn_buscar,
+                                        btn_mostrar_todos,
+                                    ],
+                                ),
+                                ft.Row(
+                                    controls=[tabla],
+                                    scroll=ft.ScrollMode.AUTO,
+                                ),
+                            ],
+                        ),
+                        padding=22,
+                        bgcolor=ft.Colors.WHITE,
+                        border_radius=16,
+                    ),
+                ],
+                spacing=20,
+            ),
+            padding=30,
         ),
     )
 
