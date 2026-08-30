@@ -1,7 +1,11 @@
+# Backend
 fastapi
 uvicorn[standard]
+
+# Base de datos
 pymysql
 python-dotenv
+
+# Frontend
 flet
 requests
-
