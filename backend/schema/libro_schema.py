@@ -8,7 +8,7 @@ devuelve al frontend.
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-
+from datetime import datetime
 
 class EstadoLibro(str, Enum):
     """Estados permitidos para un libro."""
@@ -213,7 +213,7 @@ class LibroRespuesta(LibroBase):
     """Representa un libro devuelto por la API."""
 
     id: int
-    fecha_creacion: str | None = None
-    fecha_actualizacion: str | None = None
+    fecha_creacion: datetime | None = None
+    fecha_actualizacion: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
