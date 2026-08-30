@@ -1,14 +1,12 @@
 """
 Esquemas de validación para los libros.
-
-Los esquemas determinan qué datos acepta la API y qué datos
-devuelve al frontend.
 """
 
+from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
-from datetime import datetime
+from pydantic import BaseModel, Field, field_validator
+
 
 class EstadoLibro(str, Enum):
     """Estados permitidos para un libro."""
@@ -18,57 +16,47 @@ class EstadoLibro(str, Enum):
     MANTENCION = "MANTENCION"
 
 
-class LibroBase(BaseModel):
-    """Campos compartidos al crear y mostrar un libro."""
+class LibroCrear(BaseModel):
+    """Datos necesarios para registrar un libro."""
 
     titulo: str = Field(
         min_length=2,
         max_length=150,
-        examples=["El principito"],
     )
 
     autor: str = Field(
         min_length=2,
         max_length=120,
-        examples=["Antoine de Saint-Exupéry"],
     )
 
     genero: str = Field(
         min_length=2,
         max_length=60,
-        examples=["Narrativa"],
     )
 
     isbn: str | None = Field(
         default=None,
         min_length=10,
         max_length=20,
-        examples=["9780156012195"],
     )
 
     anio_publicacion: int = Field(
         ge=1450,
         le=2100,
-        examples=[1943],
     )
 
     ejemplares: int = Field(
         ge=0,
         le=10000,
-        examples=[4],
     )
 
     ubicacion: str = Field(
         default="Sin asignar",
         min_length=2,
         max_length=50,
-        examples=["Estante A-01"],
     )
 
-    estado: EstadoLibro = Field(
-        default=EstadoLibro.DISPONIBLE,
-        examples=[EstadoLibro.DISPONIBLE],
-    )
+    estado: EstadoLibro = EstadoLibro.DISPONIBLE
 
     @field_validator(
         "titulo",
@@ -78,8 +66,8 @@ class LibroBase(BaseModel):
         mode="before",
     )
     @classmethod
-    def limpiar_textos(cls, valor: str) -> str:
-        """Elimina espacios innecesarios al inicio y al final."""
+    def limpiar_texto(cls, valor: str) -> str:
+        """Elimina espacios innecesarios."""
 
         if isinstance(valor, str):
             return valor.strip()
@@ -88,41 +76,31 @@ class LibroBase(BaseModel):
 
     @field_validator("isbn", mode="before")
     @classmethod
-    def limpiar_isbn(cls, valor: str | None) -> str | None:
-        """
-        Limpia el ISBN.
-
-        Un campo vacío se convierte en None porque el ISBN
-        es opcional.
-        """
+    def validar_isbn(
+        cls,
+        valor: str | None,
+    ) -> str | None:
+        """Limpia y valida el ISBN."""
 
         if valor is None:
             return None
 
-        isbn_limpio = str(valor).strip().replace("-", "").replace(" ", "")
+        isbn = str(valor).strip()
+        isbn = isbn.replace("-", "").replace(" ", "")
 
-        if not isbn_limpio:
+        if not isbn:
             return None
 
-        if not isbn_limpio.isdigit():
-            raise ValueError("El ISBN solamente puede contener números")
+        if not isbn.isdigit():
+            raise ValueError(
+                "El ISBN solamente puede contener números"
+            )
 
-        return isbn_limpio
-
-
-class LibroCrear(LibroBase):
-    """Datos exigidos para registrar un libro."""
-
-    pass
+        return isbn
 
 
 class LibroActualizar(BaseModel):
-    """
-    Datos permitidos al actualizar un libro.
-
-    Todos los campos son opcionales porque se puede modificar
-    solamente una parte del registro.
-    """
+    """Datos que se pueden modificar de un libro."""
 
     titulo: str | None = Field(
         default=None,
@@ -176,11 +154,11 @@ class LibroActualizar(BaseModel):
         mode="before",
     )
     @classmethod
-    def limpiar_textos_opcionales(
+    def limpiar_texto(
         cls,
         valor: str | None,
     ) -> str | None:
-        """Limpia los campos de texto enviados al actualizar."""
+        """Elimina espacios innecesarios."""
 
         if isinstance(valor, str):
             return valor.strip()
@@ -189,31 +167,40 @@ class LibroActualizar(BaseModel):
 
     @field_validator("isbn", mode="before")
     @classmethod
-    def limpiar_isbn_opcional(
+    def validar_isbn(
         cls,
         valor: str | None,
     ) -> str | None:
-        """Limpia y comprueba el ISBN durante una actualización."""
+        """Limpia y valida el ISBN."""
 
         if valor is None:
             return None
 
-        isbn_limpio = str(valor).strip().replace("-", "").replace(" ", "")
+        isbn = str(valor).strip()
+        isbn = isbn.replace("-", "").replace(" ", "")
 
-        if not isbn_limpio:
+        if not isbn:
             return None
 
-        if not isbn_limpio.isdigit():
-            raise ValueError("El ISBN solamente puede contener números")
+        if not isbn.isdigit():
+            raise ValueError(
+                "El ISBN solamente puede contener números"
+            )
 
-        return isbn_limpio
+        return isbn
 
 
-class LibroRespuesta(LibroBase):
-    """Representa un libro devuelto por la API."""
+class LibroRespuesta(BaseModel):
+    """Estructura utilizada al devolver un libro."""
 
     id: int
-    fecha_creacion: datetime | None = None
-    fecha_actualizacion: datetime | None = None
-
-    model_config = ConfigDict(from_attributes=True)
+    titulo: str
+    autor: str
+    genero: str
+    isbn: str | None
+    anio_publicacion: int
+    ejemplares: int
+    ubicacion: str
+    estado: EstadoLibro
+    fecha_creacion: datetime
+    fecha_actualizacion: datetime

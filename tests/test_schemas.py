@@ -7,7 +7,7 @@ python -m tests.test_schemas
 
 from pydantic import ValidationError
 
-from backend.schema.libro_schema import LibroCrear
+from backend.schema import LibroCrear
 
 
 def probar_libro_correcto() -> None:

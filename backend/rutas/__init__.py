@@ -1,2 +1,0 @@
-"""Rutas de la API."""
-

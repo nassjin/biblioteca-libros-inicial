@@ -7,8 +7,8 @@ python -m tests.test_connection
 
 from pymysql import MySQLError
 
-from backend.core.config import settings
-from backend.core.database import create_connection
+from backend.config import DB_HOST, DB_NAME, DB_PORT
+from backend.database import get_connection
 
 
 def test_connection() -> None:
@@ -17,7 +17,7 @@ def test_connection() -> None:
     connection = None
 
     try:
-        connection = create_connection()
+        connection = get_connection()
 
         print("Conexión realizada correctamente.")
         print(f"Servidor: {settings.db_host}")
