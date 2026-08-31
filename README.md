@@ -56,7 +56,33 @@ El sistema permite:
 
 ---
 
-## 3. Arquitectura del sistema
+## 3. Capturas del sistema
+
+### Pantalla principal
+
+La pantalla principal reúne los indicadores, el formulario de registro, el buscador y el catálogo de libros.
+
+![Pantalla principal de Biblioteca Escolar](docs/images/pantalla-principal.png)
+
+### Operaciones principales
+
+| Registro de libros | Búsqueda de libros |
+|---|---|
+| ![Formulario de registro](docs/images/registro-libro.png) | ![Búsqueda de libros](docs/images/busqueda-libros.png) |
+
+| Edición de un libro | Confirmación de eliminación |
+|---|---|
+| ![Edición de un libro](docs/images/edicion-libro.png) | ![Confirmación de eliminación](docs/images/eliminacion-libro.png) |
+
+### Documentación de la API
+
+FastAPI genera automáticamente una interfaz de documentación interactiva mediante Swagger.
+
+![Documentación Swagger de la API](docs/images/swagger-api.png)
+
+---
+
+## 4. Arquitectura del sistema
 
 ```text
 ┌──────────────────────┐
@@ -102,7 +128,7 @@ MySQL → FastAPI → JSON → Flet → Usuario
 
 ---
 
-## 4. Tecnologías utilizadas
+## 5. Tecnologías utilizadas
 
 | Tecnología | Función |
 |---|---|
@@ -122,7 +148,7 @@ MySQL → FastAPI → JSON → Flet → Usuario
 
 ---
 
-## 5. Estructura del proyecto
+## 6. Estructura del proyecto
 
 ```text
 biblioteca-libros-inicial/
@@ -147,9 +173,14 @@ biblioteca-libros-inicial/
 │   ├── seed.sql
 │   └── triggers.sql
 │
-├── tests/
-│   ├── __init__.py
-│   └── test_connection.py
+├── docs/
+│   └── images/
+│       ├── pantalla-principal.png
+│       ├── registro-libro.png
+│       ├── busqueda-libros.png
+│       ├── edicion-libro.png
+│       ├── eliminacion-libro.png
+│       └── swagger-api.png
 │
 ├── .env.example
 ├── .gitignore
@@ -159,7 +190,7 @@ biblioteca-libros-inicial/
 
 ---
 
-## 6. Explicación de los archivos
+## 7. Explicación de los archivos
 
 ### Backend
 
@@ -185,6 +216,12 @@ biblioteca-libros-inicial/
 | `database/seed.sql` | Inserta libros iniciales |
 | `database/triggers.sql` | Crea los triggers automáticos |
 
+### Documentación visual
+
+| Carpeta | Función |
+|---|---|
+| `docs/images/` | Almacena las capturas del producto final utilizadas en el README |
+
 ### Configuración
 
 | Archivo | Función |
@@ -197,7 +234,7 @@ biblioteca-libros-inicial/
 
 ---
 
-## 7. Estructura de la tabla `libros`
+## 8. Estructura de la tabla `libros`
 
 | Campo | Tipo | Descripción |
 |---|---|---|
@@ -215,7 +252,7 @@ biblioteca-libros-inicial/
 
 ---
 
-## 8. Estados permitidos
+## 9. Estados permitidos
 
 | Estado | Significado |
 |---|---|
@@ -231,7 +268,7 @@ Los triggers sincronizan automáticamente el estado:
 
 ---
 
-## 9. Requisitos previos
+## 10. Requisitos previos
 
 Antes de ejecutar el proyecto se necesita:
 
@@ -257,7 +294,7 @@ git --version
 
 ---
 
-## 10. Descargar el proyecto
+## 11. Descargar el proyecto
 
 ### Desde PyCharm
 
@@ -282,7 +319,7 @@ cd biblioteca-libros-inicial
 
 ---
 
-## 11. Crear el entorno virtual
+## 12. Crear el entorno virtual
 
 Desde la carpeta principal:
 
@@ -316,7 +353,7 @@ La terminal debería mostrar:
 
 ---
 
-## 12. Configurar el intérprete en PyCharm
+## 13. Configurar el intérprete en PyCharm
 
 Abrir:
 
@@ -350,7 +387,7 @@ La ruta debe terminar en:
 
 ---
 
-## 13. Instalar dependencias
+## 14. Instalar dependencias
 
 Actualizar `pip`:
 
@@ -378,7 +415,7 @@ Versión utilizada:
 
 ---
 
-## 14. Configurar `.env`
+## 15. Configurar `.env`
 
 Crear una copia de `.env.example`:
 
@@ -426,7 +463,7 @@ Resultado esperado:
 
 ---
 
-## 15. Crear la base de datos
+## 16. Crear la base de datos
 
 Abrir DBeaver y conectarse con MySQL.
 
@@ -476,26 +513,6 @@ Deben aparecer:
 ```text
 trg_libros_before_insert
 trg_libros_before_update
-```
-
----
-
-## 16. Probar la conexión con MySQL
-
-Desde la raíz:
-
-```powershell
-python -m tests.test_connection
-```
-
-Resultado esperado:
-
-```text
-Conexión realizada correctamente.
-Servidor: localhost
-Puerto: 3306
-Base de datos: biblioteca_escolar
-Conexión cerrada correctamente.
 ```
 
 ---
