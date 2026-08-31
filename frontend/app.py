@@ -10,7 +10,6 @@ import flet as ft
 import requests
 from dotenv import load_dotenv
 
-
 # ==========================================================
 # CONFIGURACIÓN DE LA API
 # ==========================================================
@@ -35,8 +34,8 @@ def main(page: ft.Page):
 
     page.title = "Biblioteca Escolar"
     page.padding = 20
-    page.theme_mode = ft.ThemeMode.LIGHT
-    page.bgcolor = "#F1F5F9"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.bgcolor = "#0F172A"
     page.scroll = ft.ScrollMode.AUTO
 
     page.theme = ft.Theme(
@@ -130,6 +129,9 @@ def main(page: ft.Page):
     # ======================================================
 
     tabla = ft.DataTable(
+        heading_row_color="#334155",
+        data_row_color="#1E293B",
+        divider_thickness=0.5,
         columns=[
             ft.DataColumn(ft.Text("ID")),
             ft.DataColumn(ft.Text("Título")),
@@ -153,28 +155,28 @@ def main(page: ft.Page):
         "0",
         size=28,
         weight=ft.FontWeight.BOLD,
-        color=ft.Colors.INDIGO_700,
+        color=ft.Colors.INDIGO_300,
     )
 
     txt_disponibles = ft.Text(
         "0",
         size=28,
         weight=ft.FontWeight.BOLD,
-        color=ft.Colors.GREEN_700,
+        color=ft.Colors.GREEN_300,
     )
 
     txt_agotados = ft.Text(
         "0",
         size=28,
         weight=ft.FontWeight.BOLD,
-        color=ft.Colors.RED_700,
+        color=ft.Colors.RED_300,
     )
 
     txt_mantencion = ft.Text(
         "0",
         size=28,
         weight=ft.FontWeight.BOLD,
-        color=ft.Colors.ORANGE_700,
+        color=ft.Colors.ORANGE_300,
     )
 
     def crear_tarjeta_indicador(
@@ -184,7 +186,7 @@ def main(page: ft.Page):
             color_fondo: str,
             color_icono,
     ):
-        """Crea una tarjeta para mostrar un indicador."""
+        """Crea una tarjeta oscura para un indicador."""
 
         return ft.Container(
             content=ft.Row(
@@ -196,7 +198,7 @@ def main(page: ft.Page):
                             size=28,
                         ),
                         padding=12,
-                        bgcolor=ft.Colors.WHITE,
+                        bgcolor="#1E293B",
                         border_radius=12,
                     ),
                     ft.Column(
@@ -204,7 +206,7 @@ def main(page: ft.Page):
                             ft.Text(
                                 titulo,
                                 size=13,
-                                color=ft.Colors.GREY_700,
+                                color=ft.Colors.GREY_300,
                             ),
                             valor,
                         ],
@@ -222,32 +224,32 @@ def main(page: ft.Page):
         titulo="Total de libros",
         valor=txt_total,
         icono=ft.Icons.LIBRARY_BOOKS,
-        color_fondo="#E0E7FF",
-        color_icono=ft.Colors.INDIGO_700,
+        color_fondo="#1E1B4B",
+        color_icono=ft.Colors.INDIGO_300,
     )
 
     tarjeta_disponibles = crear_tarjeta_indicador(
         titulo="Disponibles",
         valor=txt_disponibles,
         icono=ft.Icons.CHECK_CIRCLE,
-        color_fondo="#DCFCE7",
-        color_icono=ft.Colors.GREEN_700,
+        color_fondo="#052E16",
+        color_icono=ft.Colors.GREEN_300,
     )
 
     tarjeta_agotados = crear_tarjeta_indicador(
         titulo="Agotados",
         valor=txt_agotados,
         icono=ft.Icons.REMOVE_CIRCLE,
-        color_fondo="#FEE2E2",
-        color_icono=ft.Colors.RED_700,
+        color_fondo="#450A0A",
+        color_icono=ft.Colors.RED_300,
     )
 
     tarjeta_mantencion = crear_tarjeta_indicador(
         titulo="En mantención",
         valor=txt_mantencion,
         icono=ft.Icons.BUILD_CIRCLE,
-        color_fondo="#FFEDD5",
-        color_icono=ft.Colors.ORANGE_700,
+        color_fondo="#431407",
+        color_icono=ft.Colors.ORANGE_300,
     )
 
 
@@ -417,23 +419,23 @@ def main(page: ft.Page):
         }
 
     def crear_etiqueta_estado(estado: str):
-        """Crea una etiqueta con un color según el estado."""
+        """Crea una etiqueta oscura según el estado."""
 
         configuracion = {
             "DISPONIBLE": {
                 "texto": "Disponible",
-                "fondo": "#DCFCE7",
-                "color": ft.Colors.GREEN_800,
+                "fondo": "#14532D",
+                "color": ft.Colors.GREEN_200,
             },
             "AGOTADO": {
                 "texto": "Agotado",
-                "fondo": "#FEE2E2",
-                "color": ft.Colors.RED_800,
+                "fondo": "#7F1D1D",
+                "color": ft.Colors.RED_200,
             },
             "MANTENCION": {
                 "texto": "Mantención",
-                "fondo": "#FFEDD5",
-                "color": ft.Colors.ORANGE_800,
+                "fondo": "#7C2D12",
+                "color": ft.Colors.ORANGE_200,
             },
         }
 
@@ -441,8 +443,8 @@ def main(page: ft.Page):
             estado,
             {
                 "texto": estado,
-                "fondo": "#E2E8F0",
-                "color": ft.Colors.GREY_800,
+                "fondo": "#334155",
+                "color": ft.Colors.GREY_200,
             },
         )
 
@@ -930,7 +932,7 @@ def main(page: ft.Page):
                             color=ft.Colors.WHITE,
                         ),
                         padding=12,
-                        bgcolor="#4338CA",
+                        bgcolor="#4F46E5",
                         border_radius=14,
                     ),
                     ft.Column(
@@ -944,7 +946,7 @@ def main(page: ft.Page):
                             ft.Text(
                                 "Administración del catálogo de libros",
                                 size=14,
-                                color="#C7D2FE",
+                                color=ft.Colors.GREY_300,
                             ),
                         ],
                         spacing=2,
@@ -955,7 +957,7 @@ def main(page: ft.Page):
                 horizontal=30,
                 vertical=24,
             ),
-            bgcolor="#312E81",
+            bgcolor="#111827",
         ),
 
         # ==================================================
@@ -983,7 +985,7 @@ def main(page: ft.Page):
                                     controls=[
                                         ft.Icon(
                                             ft.Icons.EDIT_NOTE,
-                                            color=ft.Colors.INDIGO_600,
+                                            color=ft.Colors.INDIGO_300,
                                         ),
                                         ft.Text(
                                             "Información del libro",
@@ -1004,7 +1006,7 @@ def main(page: ft.Page):
                             ],
                         ),
                         padding=22,
-                        bgcolor=ft.Colors.WHITE,
+                        bgcolor="#1E293B",
                         border_radius=16,
                     ),
 
@@ -1016,7 +1018,7 @@ def main(page: ft.Page):
                                     controls=[
                                         ft.Icon(
                                             ft.Icons.MENU_BOOK,
-                                            color=ft.Colors.INDIGO_600,
+                                            color=ft.Colors.INDIGO_300,
                                         ),
                                         ft.Text(
                                             "Catálogo de libros",
@@ -1040,7 +1042,7 @@ def main(page: ft.Page):
                             ],
                         ),
                         padding=22,
-                        bgcolor=ft.Colors.WHITE,
+                        bgcolor="#1E293B",
                         border_radius=16,
                     ),
                 ],
