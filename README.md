@@ -429,9 +429,9 @@ Abrir `.env` y completar:
 # Configuración de MySQL
 DB_HOST=localhost
 DB_PORT=3306
-DB_USER=root
+DB_USER=NOMBRE_USUSARIO
 DB_PASSWORD=TU_CONTRASEÑA_REAL
-DB_NAME=biblioteca_escolar
+DB_NAME=NOMBRE_BASE_DE_DATOS
 
 # Configuración de FastAPI
 API_HOST=127.0.0.1
@@ -707,7 +707,7 @@ Access denied for user
 Revisar en `.env`:
 
 ```env
-DB_USER=root
+DB_USER=NOMBRE_USUARIO
 DB_PASSWORD=TU_CONTRASEÑA
 ```
 
